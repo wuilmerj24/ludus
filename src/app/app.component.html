@@ -1,0 +1,85 @@
+<div class="min-h-screen bg-zinc-950 text-zinc-100 p-6 font-sans">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center gap-3">
+      <div
+        class="w-10 h-10 bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-lg flex items-center justify-center">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4">
+          </path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">Ludus</h1>
+        <p class="text-xs text-zinc-400">Driver Manager v0.1.0 - Fase 1</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-full">
+      <span class="text-sm text-zinc-300 font-medium">Fase 1: Drivers</span>
+    </div>
+  </div>
+
+  <!-- GPU Detectada + Info Sistema -->
+  <div class="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6 mb-6">
+    <div class="flex items-start justify-between mb-4">
+      <div>
+        <p class="text-xs text-zinc-500 uppercase tracking-wide mb-1">GPU Detectada</p>
+        <h2 class="text-xl font-semibold text-zinc-100">{{gpu_name}}</h2>
+        <p class="text-sm text-zinc-400 mt-1">{{pci_ex_info}}</p>
+      </div>
+      <div class="text-right">
+        <p class="text-xs text-zinc-500 mb-1">Driver Actual</p>
+        <p class="text-lg font-bold text-emerald-400">{{driver_version}}</p>
+        <!-- <p class="text-xs text-zinc-500 mt-1">Lanzado: 2026-03-15</p> -->
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-zinc-950/60 rounded-lg p-3 border border-zinc-800">
+        <p class="text-xs text-zinc-500 mb-1">Sistema</p>
+        <p class="text-sm font-medium text-zinc-200">{{so_name}} {{os_version}}</p>
+      </div>
+      <div class="bg-zinc-950/60 rounded-lg p-3 border border-zinc-800">
+        <p class="text-xs text-zinc-500 mb-1">Kernel</p>
+        <p class="text-sm font-medium text-zinc-200">{{kernel_version}}</p>
+      </div>
+
+      
+      <!-- <div class="bg-zinc-950/60 rounded-lg p-3 border border-zinc-800">
+        <p class="text-xs text-zinc-500 mb-1">Estado</p>
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+          <span class="text-sm font-medium text-emerald-400">Operativo</span>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+  
+
+  <!-- Log de Actividad -->
+  <div class="mt-6 bg-zinc-900/50 border border-zinc-800 rounded-xl p-5">
+    <h3 class="text-sm font-semibold text-zinc-200 mb-3 flex items-center gap-2">
+      <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+        </path>
+      </svg>
+      Registro de Actividad
+    </h3>
+    <div
+      class="bg-zinc-950/60 rounded-lg p-3 border border-zinc-800 font-mono text-xs space-y-1 max-h-32 overflow-y-auto">
+      <p class="text-zinc-500">[14:32:01] Sistema iniciado</p>
+      <p class="text-emerald-400">[14:32:02] GPU detectada: NVIDIA GeForce RTX 4070</p>
+      <p class="text-zinc-500">[14:32:02] Driver actual: 555.58.02</p>
+      <p class="text-amber-400">[14:32:03] Nueva versión disponible: 560.35.03</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="mt-6 pt-4 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-600">
+    <p>Ludus Driver Manager | Fase 1</p>
+    <p>Fase 2: Driver Manager próximamente</p>
+  </div>
+</div>
