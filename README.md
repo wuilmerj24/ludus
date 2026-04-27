@@ -83,7 +83,7 @@ Posible evolución
 
 Instalación (Desarrollo)
 ```bash
-git clone https://github.com/tuusuario/ludus
+git clone https://github.com/wuilmerj24/ludus
 cd ludus
 yarn tauri dev
 ```
