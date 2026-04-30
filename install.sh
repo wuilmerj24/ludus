@@ -66,14 +66,33 @@ install_deb() {
   TMP="/tmp/ludus.deb"
 
   echo "Descargando: $URL"
-  curl -fL "$URL" -o "$TMP"
 
-  # Validar descarga (DESPUÉS de descargar)
-  if [ ! -s "$TMP" ] || [ "$(stat -c%s "$TMP")" -lt 10000 ]; then
-    echo "Error: descarga inválida (.deb corrupto o inexistente)"
+  # Descargar con manejo real de errores
+  HTTP_CODE=$(curl -L -w "%{http_code}" -o "$TMP" "$URL")
+
+  if [ "$HTTP_CODE" -ne 200 ]; then
+    echo "Error: descarga falló (HTTP $HTTP_CODE)"
+    rm -f "$TMP"
     exit 1
   fi
 
+  # Validar tamaño mínimo (~10KB)
+  SIZE=$(stat -c%s "$TMP")
+  if [ "$SIZE" -lt 10000 ]; then
+    echo "Error: archivo demasiado pequeño ($SIZE bytes)"
+    echo "Probablemente no es un .deb válido"
+    rm -f "$TMP"
+    exit 1
+  fi
+
+  # Validar que realmente sea un .deb
+  if ! dpkg-deb -I "$TMP" >/dev/null 2>&1; then
+    echo "Error: archivo no es un paquete .deb válido"
+    rm -f "$TMP"
+    exit 1
+  fi
+
+  echo "Instalando paquete..."
   sudo dpkg -i "$TMP" || sudo apt-get install -f -y
 
   rm -f "$TMP"
