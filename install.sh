@@ -30,19 +30,15 @@ detect_os() {
 get_latest_version() {
   echo "Consultando última versión..."
 
-  FINAL_URL=$(curl -sL -o /dev/null -w '%{url_effective}' \
-    "https://github.com/$REPO/releases/latest")
+  RESPONSE=$(curl -s https://api.github.com/repos/$REPO/releases)
 
-  case "$FINAL_URL" in
-    *"/tag/"*)
-      LATEST=$(echo "$FINAL_URL" | sed 's#.*/tag/##')
-      ;;
-    *)
-      echo "Error: no hay release marcado como 'Latest'"
-      echo "Solución: marca un release como latest en GitHub"
-      exit 1
-      ;;
-  esac
+  # tomar el primer tag_name (el más reciente)
+  LATEST=$(echo "$RESPONSE" | grep '"tag_name":' | head -n 1 | sed -E 's/.*"([^"]+)".*/\1/')
+
+  if [ -z "$LATEST" ]; then
+    echo "No se pudo obtener la versión"
+    exit 1
+  fi
 
   VERSION_NO_V=$(echo "$LATEST" | sed 's/^v//')
 
