@@ -30,18 +30,21 @@ detect_os() {
 get_latest_version() {
   echo "Consultando última versión..."
 
-  FINAL_URL=$(curl -sI -L -o /dev/null -w '%{url_effective}' \
+  FINAL_URL=$(curl -sL -o /dev/null -w '%{url_effective}' \
     "https://github.com/$REPO/releases/latest")
 
-  # Ejemplo:
-  # https://github.com/user/repo/releases/tag/v0.1.0
+  # Validar que sí contiene /tag/
+  case "$FINAL_URL" in
+    *"/tag/"*)
+      ;;
+    *)
+      echo "Error: no se pudo resolver el tag correctamente"
+      echo "URL obtenida: $FINAL_URL"
+      exit 1
+      ;;
+  esac
+
   LATEST=$(echo "$FINAL_URL" | sed 's#.*/tag/##')
-
-  if [ -z "$LATEST" ]; then
-    echo "No se pudo obtener la versión"
-    exit 1
-  fi
-
   VERSION_NO_V=$(echo "$LATEST" | sed 's/^v//')
 
   echo "Última versión: $LATEST"
@@ -66,7 +69,11 @@ install_deb() {
 
   URL="https://github.com/$REPO/releases/download/$LATEST/${BINARY_NAME}_${VERSION_NO_V}_${ARCH}.deb"
   TMP="/tmp/ludus.deb"
-
+    # Verificar tamaño mínimo (evita HTML/errores)
+  if [ ! -s "$TMP" ] || [ "$(stat -c%s "$TMP")" -lt 10000 ]; then
+    echo "Error: descarga inválida (.deb corrupto o inexistente)"
+    exit 1
+  fi
   curl -L "$URL" -o "$TMP"
 
   sudo dpkg -i "$TMP" || sudo apt-get install -f -y

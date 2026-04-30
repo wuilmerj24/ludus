@@ -87,6 +87,10 @@ git clone https://github.com/wuilmerj24/ludus
 cd ludus
 yarn tauri dev
 ```
+Curl
+```bash
+curl -fsSL https://raw.githubusercontent.com/wuilmerj24/ludus/main/install.sh | sh
+```
 
 ## Estado del Proyecto
 🚧 En desarrollo activo — Fase 1 (MVP)
