@@ -64,12 +64,15 @@ install_deb() {
 
   URL="https://github.com/$REPO/releases/download/$LATEST/${BINARY_NAME}_${VERSION_NO_V}_${ARCH}.deb"
   TMP="/tmp/ludus.deb"
-    # Verificar tamaño mínimo (evita HTML/errores)
+
+  echo "Descargando: $URL"
+  curl -fL "$URL" -o "$TMP"
+
+  # Validar descarga (DESPUÉS de descargar)
   if [ ! -s "$TMP" ] || [ "$(stat -c%s "$TMP")" -lt 10000 ]; then
     echo "Error: descarga inválida (.deb corrupto o inexistente)"
     exit 1
   fi
-  curl -L "$URL" -o "$TMP"
 
   sudo dpkg -i "$TMP" || sudo apt-get install -f -y
 
