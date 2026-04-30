@@ -33,18 +33,17 @@ get_latest_version() {
   FINAL_URL=$(curl -sL -o /dev/null -w '%{url_effective}' \
     "https://github.com/$REPO/releases/latest")
 
-  # Validar que sí contiene /tag/
   case "$FINAL_URL" in
     *"/tag/"*)
+      LATEST=$(echo "$FINAL_URL" | sed 's#.*/tag/##')
       ;;
     *)
-      echo "Error: no se pudo resolver el tag correctamente"
-      echo "URL obtenida: $FINAL_URL"
+      echo "Error: no hay release marcado como 'Latest'"
+      echo "Solución: marca un release como latest en GitHub"
       exit 1
       ;;
   esac
 
-  LATEST=$(echo "$FINAL_URL" | sed 's#.*/tag/##')
   VERSION_NO_V=$(echo "$LATEST" | sed 's/^v//')
 
   echo "Última versión: $LATEST"
