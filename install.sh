@@ -24,12 +24,20 @@ detect_os() {
 }
 
 get_latest_version() {
-  LATEST=$(curl -s https://api.github.com/repos/$REPO/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+  echo "Consultando última versión..."
+  LATEST=$(curl -sL \
+    -H "Accept: application/vnd.github.v3+json" \
+    -H "User-Agent: ludus-installer" \
+    https://api.github.com/repos/$REPO/releases/latest | \
+    grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+  
   if [ -z "$LATEST" ]; then
     echo "No se pudo obtener la última versión"
+    echo "Verifica: https://github.com/$REPO/releases/latest"
     exit 1
   fi
   VERSION_NO_V=$(echo $LATEST | sed 's/v//')
+  echo "Última versión encontrada: $LATEST"
 }
 
 install_appimage() {
