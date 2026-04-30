@@ -67,11 +67,9 @@ install_deb() {
 
   echo "Descargando: $URL"
 
-  # Descargar con manejo real de errores
-  HTTP_CODE=$(curl -L -w "%{http_code}" -o "$TMP" "$URL")
-
-  if [ "$HTTP_CODE" -ne 200 ]; then
-    echo "Error: descarga falló (HTTP $HTTP_CODE)"
+  # Descargar correctamente
+  if ! curl -fL --retry 3 --retry-delay 2 -o "$TMP" "$URL"; then
+    echo "Error: no se pudo descargar el archivo"
     rm -f "$TMP"
     exit 1
   fi
@@ -79,15 +77,14 @@ install_deb() {
   # Validar tamaño mínimo (~10KB)
   SIZE=$(stat -c%s "$TMP")
   if [ "$SIZE" -lt 10000 ]; then
-    echo "Error: archivo demasiado pequeño ($SIZE bytes)"
-    echo "Probablemente no es un .deb válido"
+    echo "Error: archivo inválido ($SIZE bytes)"
     rm -f "$TMP"
     exit 1
   fi
 
-  # Validar que realmente sea un .deb
+  # Validar formato real .deb
   if ! dpkg-deb -I "$TMP" >/dev/null 2>&1; then
-    echo "Error: archivo no es un paquete .deb válido"
+    echo "Error: archivo no es un .deb válido"
     rm -f "$TMP"
     exit 1
   fi
