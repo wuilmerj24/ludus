@@ -31,7 +31,7 @@ jobs:
             fuse \
             libfuse2 \
             protobuf-compiler \
-            libdrm-dev 
+            libdrm-dev \
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -45,8 +45,8 @@ jobs:
       - name: Build release binary
         run: cargo build --release
 
-      - name: Build packages
-        run: cargo packager --release --formats deb,rpm,appimage
+      - name: Build packages (solo deb y AppImage)
+        run: cargo packager --release --formats deb,appimage
 
       - name: Debug - Show all generated files
         run: |
@@ -54,12 +54,8 @@ jobs:
           find target/release/bundle -type f | sort
           echo "=== ARCHIVOS .deb ==="
           find target/release/bundle -name "*.deb"
-          echo "=== ARCHIVOS .rpm ==="
-          find target/release/bundle -name "*.rpm"
           echo "=== ARCHIVOS .AppImage ==="
           find target/release/bundle -name "*.AppImage"
-          echo "=== ARCHIVOS .tar, .tar.gz, .tgz ==="
-          find target/release/bundle -name "*.tar" -o -name "*.tar.gz" -o -name "*.tgz"
 
       - name: Publish Release
         uses: softprops/action-gh-release@v2
@@ -70,12 +66,17 @@ jobs:
             Release ${{ github.ref_name }}
             
             ## Descargas:
-            - 📦 .deb package
-            - 📦 .rpm package
-            - 📦 AppImage
+            - 📦 .deb package (Debian/Ubuntu)
+            - 📦 AppImage (Universal)
+            
+            ## Instalación:
+            ```bash
+            # Debian/Ubuntu
+            sudo dpkg -i ludus_*.deb
+            
+            # AppImage (cualquier distribución)
+            chmod +x ludus_*.AppImage
+            ./ludus_*.AppImage
           files: |
-            target/release/bundle/**/*.deb
-            target/release/bundle/**/*.rpm
-            target/release/bundle/**/*.AppImage
-            
-            
+            target/release/bundle//*.deb
+            target/release/bundle//*.AppImage
