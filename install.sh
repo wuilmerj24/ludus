@@ -6,138 +6,140 @@ BINARY_NAME="ludus"
 INSTALL_DIR="$HOME/.local/bin"
 
 detect_os() {
-if [ -f /etc/os-release ]; then
-. /etc/os-release
-OS=$ID
-else
-echo "No se pudo detectar la distro"
-exit 1
-fi
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    OS=$ID
+  else
+    echo "No se pudo detectar la distro"
+    exit 1
+  fi
 }
 
 get_latest_version() {
-echo "Consultando última versión..."
+  echo "Consultando última versión..."
 
-LATEST=$(curl -s
-"https://api.github.com/repos/$REPO/releases/latest" |
-grep '"tag_name":' |
-sed -E 's/."([^"]+)"./\1/')
+  LATEST=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" \
+    | grep '"tag_name":' \
+    | sed -E 's/.*"([^"]+)".*/\1/')
 
-if [ -z "$LATEST" ]; then
-echo "No se pudo obtener la versión"
-exit 1
-fi
+  if [ -z "$LATEST" ]; then
+    echo "No se pudo obtener la versión"
+    exit 1
+  fi
 
-VERSION_NO_V=$(echo "$LATEST" | sed 's/^v//')
-
-echo "Última versión: $LATEST"
+  echo "Última versión: $LATEST"
 }
 
 get_asset_url() {
-PATTERN="$1"
+  PATTERN="$1"
 
-curl -s
-"https://api.github.com/repos/$REPO/releases/tags/$LATEST" |
-grep browser_download_url |
-cut -d '"' -f 4 |
-grep "$PATTERN" |
-head -n 1
+  curl -s "https://api.github.com/repos/$REPO/releases/latest" \
+    | grep browser_download_url \
+    | cut -d '"' -f 4 \
+    | grep "$PATTERN" \
+    | head -n 1
 }
 
 install_deb() {
-echo "Instalando paquete .deb..."
+  echo "Instalando paquete .deb..."
 
-URL=$(get_asset_url '.deb$')
+  URL=$(get_asset_url '\.deb$')
 
-if [ -z "$URL" ]; then
-echo "No se encontró paquete .deb"
-exit 1
-fi
+  if [ -z "$URL" ]; then
+    echo "No se encontró paquete .deb"
+    exit 1
+  fi
 
-TMP="/tmp/ludus.deb"
+  echo "Descargando:"
+  echo "$URL"
 
-curl -fL -o "$TMP" "$URL"
+  TMP="/tmp/ludus.deb"
 
-sudo dpkg -i "$TMP" || sudo apt-get install -f -y
+  curl -fL -o "$TMP" "$URL"
 
-rm -f "$TMP"
+  sudo dpkg -i "$TMP" || sudo apt-get install -f -y
 
-echo "Instalación completada"
+  rm -f "$TMP"
+
+  echo "Instalación completada"
 }
 
 install_rpm() {
-echo "Instalando paquete .rpm..."
+  echo "Instalando paquete .rpm..."
 
-URL=$(get_asset_url '.rpm$')
+  URL=$(get_asset_url '\.rpm$')
 
-if [ -z "$URL" ]; then
-echo "No se encontró paquete .rpm"
-exit 1
-fi
+  if [ -z "$URL" ]; then
+    echo "No se encontró paquete .rpm"
+    exit 1
+  fi
 
-TMP="/tmp/ludus.rpm"
+  TMP="/tmp/ludus.rpm"
 
-curl -fL -o "$TMP" "$URL"
+  curl -fL -o "$TMP" "$URL"
 
-if command -v dnf >/dev/null 2>&1; then
-sudo dnf install -y "$TMP"
-elif command -v yum >/dev/null 2>&1; then
-sudo yum install -y "$TMP"
-elif command -v zypper >/dev/null 2>&1; then
-sudo zypper install -y "$TMP"
-else
-echo "No se encontró gestor RPM"
-rm -f "$TMP"
-exit 1
-fi
+  if command -v dnf >/dev/null 2>&1; then
+    sudo dnf install -y "$TMP"
+  elif command -v yum >/dev/null 2>&1; then
+    sudo yum install -y "$TMP"
+  elif command -v zypper >/dev/null 2>&1; then
+    sudo zypper install -y "$TMP"
+  else
+    echo "No se encontró gestor RPM"
+    rm -f "$TMP"
+    exit 1
+  fi
 
-rm -f "$TMP"
+  rm -f "$TMP"
 
-echo "Instalación completada"
+  echo "Instalación completada"
 }
 
 install_appimage() {
-echo "Instalando AppImage..."
+  echo "Instalando AppImage..."
 
-URL=$(get_asset_url '.AppImage$')
+  URL=$(get_asset_url '\.AppImage$')
 
-if [ -z "$URL" ]; then
-echo "No se encontró AppImage"
-exit 1
-fi
+  if [ -z "$URL" ]; then
+    echo "No se encontró AppImage"
+    exit 1
+  fi
 
-mkdir -p "$INSTALL_DIR"
+  echo "Descargando:"
+  echo "$URL"
 
-curl -fL -o "$INSTALL_DIR/$BINARY_NAME" "$URL"
+  mkdir -p "$INSTALL_DIR"
 
-chmod +x "$INSTALL_DIR/$BINARY_NAME"
+  curl -fL -o "$INSTALL_DIR/$BINARY_NAME" "$URL"
 
-echo
-echo "Instalado en:"
-echo "$INSTALL_DIR/$BINARY_NAME"
-echo
-echo "Ejecutar con:"
-echo "$BINARY_NAME"
+  chmod +x "$INSTALL_DIR/$BINARY_NAME"
+
+  echo
+  echo "Instalado en:"
+  echo "$INSTALL_DIR/$BINARY_NAME"
+  echo
+  echo "Ejecuta:"
+  echo "$BINARY_NAME"
 }
 
 main() {
-detect_os
-get_latest_version
+  detect_os
+  get_latest_version
 
-echo "Sistema detectado: $OS"
+  echo "Sistema detectado: $OS"
 
-case "$OS" in
-ubuntu|debian|linuxmint|pop)
-install_deb
-;;
-fedora|centos|rhel|opensuse*|suse)
-install_rpm
-;;
-*)
-echo "Usando AppImage..."
-install_appimage
-;;
-esac
+  case "$OS" in
+    ubuntu|debian|linuxmint|pop)
+      install_deb
+      ;;
+    fedora|centos|rhel|opensuse*|suse)
+      install_rpm
+      ;;
+    *)
+      echo "Usando AppImage..."
+      install_appimage
+      ;;
+  esac
 }
 
 main
