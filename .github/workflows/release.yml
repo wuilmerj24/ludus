@@ -46,7 +46,7 @@ jobs:
         run: cargo build --release
 
       - name: Build packages (deb y AppImage)
-        run: cargo packager --release --formats deb,appimage
+        run: cargo packager --release
 
       - name: Create .tar.gz
         run: |
@@ -60,13 +60,13 @@ jobs:
       - name: Debug - Show all generated files
         run: |
           echo "=== TODOS LOS ARCHIVOS GENERADOS ==="
-          find target/release/bundle -type f | sort
+          find target/release -type f | sort
           echo "=== ARCHIVOS .deb ==="
-          find target/release/bundle -name "*.deb"
+          find target/release -name "*.deb"
           echo "=== ARCHIVOS .AppImage ==="
-          find target/release/bundle -name "*.AppImage"
+          find target/release -name "*.AppImage"
           echo "=== ARCHIVOS .tar.gz ==="
-          find target/release/bundle -name "*.tar.gz"
+          find target/release -name "*.tar.gz"
 
       - name: Publish Release
         uses: softprops/action-gh-release@v2
