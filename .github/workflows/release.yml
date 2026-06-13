@@ -31,7 +31,7 @@ jobs:
             fuse \
             libfuse2 \
             protobuf-compiler \
-            libdrm-dev \
+            libdrm-dev 
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -45,8 +45,17 @@ jobs:
       - name: Build release binary
         run: cargo build --release
 
-      - name: Build packages (solo deb y AppImage)
-        run: cargo packager --release
+      - name: Build packages (deb y AppImage)
+        run: cargo packager --release --formats deb,appimage
+
+      - name: Create .tar.gz
+        run: |
+          # Crear carpeta para el tar
+          mkdir -p target/release/bundle/tar
+          # Crear el tar.gz con el binario
+          cd target/release
+          tar -czf ludus-${{ github.ref_name }}.tar.gz ludus
+          mv ludus-${{ github.ref_name }}.tar.gz bundle/tar/
 
       - name: Debug - Show all generated files
         run: |
@@ -56,6 +65,8 @@ jobs:
           find target/release/bundle -name "*.deb"
           echo "=== ARCHIVOS .AppImage ==="
           find target/release/bundle -name "*.AppImage"
+          echo "=== ARCHIVOS .tar.gz ==="
+          find target/release/bundle -name "*.tar.gz"
 
       - name: Publish Release
         uses: softprops/action-gh-release@v2
@@ -68,6 +79,7 @@ jobs:
             ## Descargas:
             - 📦 .deb package (Debian/Ubuntu)
             - 📦 AppImage (Universal)
+            - 📦 .tar.gz (Binary)
             
             ## Instalación:
             ```bash
@@ -77,6 +89,11 @@ jobs:
             # AppImage (cualquier distribución)
             chmod +x ludus_*.AppImage
             ./ludus_*.AppImage
+            
+            # Tar.gz (cualquier sistema)
+            tar -xzf ludus-*.tar.gz
+            ./ludus
           files: |
-            target/release/bundle//*.deb
-            target/release/bundle//*.AppImage
+            target/release//*.deb
+            target/release//.AppImage
+            target/release/**/.tar.gz
