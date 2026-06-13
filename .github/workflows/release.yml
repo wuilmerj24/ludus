@@ -51,7 +51,7 @@ jobs:
       - name: Create .tar.gz
         run: |
           # Crear carpeta para el tar
-          mkdir -p target/release/bundle/tar
+          mkdir -p target/release/tar
           # Crear el tar.gz con el binario
           cd target/release
           tar -czf ludus-${{ github.ref_name }}.tar.gz ludus
