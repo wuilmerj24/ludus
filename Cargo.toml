@@ -1,6 +1,6 @@
 [package]
 name = "ludus"
-version = "2.0.0"
+version = "2.0.8"
 edition = "2024"
 description = "Es una aplicación open source desarrollada con Rust + floem, enfocada en Linux, cuyo objetivo es ofrecer diagnóstico, gestión y optimización de GPUs en un entorno unificado y moderno."
 authors = ["Wuilmer <wilmermorgado24@gmail.com>"]
