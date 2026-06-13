@@ -46,7 +46,7 @@ jobs:
         run: cargo build --release
 
       - name: Build packages (solo deb y AppImage)
-        run: cargo packager --release --formats deb,appimage
+        run: cargo packager --release
 
       - name: Debug - Show all generated files
         run: |
