@@ -16,7 +16,7 @@ detect_os() {
 }
 
 get_latest_version() {
-  echo "Consultando última versión..."
+  echo "Consultando última versión...."
 
   LATEST=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" \
     | grep '"tag_name":' \
