@@ -2,12 +2,12 @@
 name = "ludus"
 version = "2.1.0"
 edition = "2024"
-description = "Es una aplicación open source desarrollada con Rust + floem, enfocada en Linux, cuyo objetivo es ofrecer diagnóstico, gestión y optimización de GPUs en un entorno unificado y moderno."
+description = "Es una aplicación open source desarrollada con Rust + iced, enfocada en Linux, cuyo objetivo es ofrecer diagnóstico, gestión y optimización de GPUs en un entorno unificado y moderno."
 authors = ["Wuilmer <wilmermorgado24@gmail.com>"]
 repository = "https://github.com/wuilmerj24/ludus.git"
 readme = "README.md"
 license = "MIT"
-keywords = ["gpu", "linux", "gui", "floem", "diagnostics"]
+keywords = ["gpu", "linux", "gui", "iced", "diagnostics"]
 categories = ["gui", "hardware-support", "os::linux-apis"]
 
 [dependencies]
