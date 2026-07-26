@@ -87,9 +87,9 @@ Whether you're a gamer, developer, or Linux enthusiast, Ludus is designed to giv
 
 ---
 
-## 🚧 Phase 2 — Driver Management
+## ✅ Phase 2 — Driver Management
 
-**Status:** In Progress
+**Status:** Completed
 
 ### Planned Features
 
@@ -116,7 +116,7 @@ Whether you're a gamer, developer, or Linux enthusiast, Ludus is designed to giv
 
 ---
 
-## 🎮 Phase 3 — Gaming Optimization
+## 🚧 Phase 3 — Gaming Optimization
 
 ### Planned Integrations
 
